@@ -1,0 +1,7 @@
+﻿services:
+  deletereactionbot:
+    image: deletereactionbot
+    build:
+      context: .
+      dockerfile: DeleteReactionBot/Dockerfile
+
