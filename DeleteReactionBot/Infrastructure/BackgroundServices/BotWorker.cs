@@ -4,6 +4,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using static DeleteReactionBot.Infrastructure.Consts.Consts.TelegramUsers;
 
 namespace DeleteReactionBot.Infrastructure.BackgroundServices;
 
@@ -39,6 +40,9 @@ public class BotWorker : BackgroundService
     {
         if (update.Type == UpdateType.MessageReaction)
         {
+            if (NeedSkip(update))
+                return;
+            
             await _reactionProxyService.HandleReactionAsync(update, ct);
         }
     }
@@ -48,4 +52,7 @@ public class BotWorker : BackgroundService
         Console.WriteLine(ex);
         return Task.CompletedTask;
     }
+
+    private bool NeedSkip(Update update)
+        => SkippedIds.Contains(update!.MessageReaction!.User!.Id);
 }
